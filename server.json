@@ -1,0 +1,63 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.Siddharth-coder13/secure-schema",
+  "title": "Secure Schema MCP",
+  "description": "Read-only MCP server for exposing database schema metadata without row data.",
+  "repository": {
+    "url": "https://github.com/Siddharth-coder13/secure_schema_mcp",
+    "source": "github"
+  },
+  "version": "1.0.0",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "registryBaseUrl": "https://pypi.org",
+      "identifier": "mcp-secure-schema",
+      "version": "1.0.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "DATABASE_URL",
+          "description": "SQLAlchemy database URL used for schema inspection.",
+          "isRequired": true,
+          "isSecret": true
+        },
+        {
+          "name": "DATABASE_SCHEMA",
+          "description": "Optional default schema or catalog namespace. Explicit tool arguments override it.",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "ALLOWED_TABLES",
+          "description": "Optional comma-separated table/view allowlist. When set, only listed tables and views are visible.",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "SECURE_SCHEMA_ENV",
+          "description": "Set to production to require ALLOWED_TABLES during startup.",
+          "isRequired": false,
+          "isSecret": false,
+          "default": "development"
+        },
+        {
+          "name": "FASTMCP_CHECK_FOR_UPDATES",
+          "description": "Set to off to disable FastMCP startup update checks.",
+          "isRequired": false,
+          "isSecret": false,
+          "default": "off"
+        },
+        {
+          "name": "FASTMCP_SHOW_SERVER_BANNER",
+          "description": "Set to false to suppress the FastMCP startup banner.",
+          "isRequired": false,
+          "isSecret": false,
+          "default": "false"
+        }
+      ]
+    }
+  ]
+}
