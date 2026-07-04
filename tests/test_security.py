@@ -223,3 +223,26 @@ def test_explicit_schema_overrides_database_schema_env(monkeypatch):
 
     assert "No tables or views" in result
     assert observed_schemas == ["billing", "billing"]
+
+
+def test_production_database_schema_cannot_be_overridden(monkeypatch):
+    observed_schemas = []
+
+    class FakeInspector:
+        def get_table_names(self, **kwargs):
+            observed_schemas.append(kwargs.get("schema"))
+            return []
+
+        def get_view_names(self, **kwargs):
+            observed_schemas.append(kwargs.get("schema"))
+            return []
+
+    monkeypatch.setenv("SECURE_SCHEMA_ENV", "production")
+    monkeypatch.setenv("DATABASE_SCHEMA", "app")
+    monkeypatch.setenv("ALLOWED_TABLES", "users")
+
+    with patch.object(server, "inspect", return_value=FakeInspector()):
+        result = server.list_tables(schema="billing")
+
+    assert "No tables or views" in result
+    assert observed_schemas == ["app", "app"]

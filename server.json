@@ -7,13 +7,13 @@
     "url": "https://github.com/Siddharth-coder13/secure_schema_mcp",
     "source": "github"
   },
-  "version": "1.0.0",
+  "version": "1.0.1",
   "packages": [
     {
       "registryType": "pypi",
       "registryBaseUrl": "https://pypi.org",
       "identifier": "mcp-secure-schema",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "transport": {
         "type": "stdio"
       },
@@ -26,7 +26,7 @@
         },
         {
           "name": "DATABASE_SCHEMA",
-          "description": "Optional default schema or catalog namespace. Explicit tool arguments override it.",
+          "description": "Optional default schema or catalog namespace. In production it is locked and tool arguments cannot override it.",
           "isRequired": false,
           "isSecret": false
         },

@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.INFO, stream=sys.stderr)
 logger = logging.getLogger(__name__)
 
 mcp = FastMCP(
-    "Secure Universal Schema Inspector",
+    "Secure Schema MCP",
     instructions=(
         "Expose database schema metadata only. Use schema_overview for a safe "
         "low-token database map, list_tables for inventory, and inspect_table "
@@ -50,10 +50,13 @@ def is_production_mode() -> bool:
 
 
 def resolve_schema(schema: str | None = None) -> str | None:
-    """Explicit tool argument wins over the process-level default schema."""
+    """Resolve the schema while treating production configuration as a boundary."""
+    configured_schema = get_default_schema()
+    if is_production_mode() and configured_schema:
+        return configured_schema
     if schema:
         return schema
-    return get_default_schema()
+    return configured_schema
 
 
 def schema_kwargs(schema: str | None = None) -> dict[str, str]:
@@ -83,7 +86,7 @@ def get_engine():
         return _engine
 
     validate_startup_config()
-    database_url = os.getenv("DATABASE_URL")
+    database_url = os.environ["DATABASE_URL"]
 
     _engine = create_engine(database_url, pool_pre_ping=True)
     return _engine
@@ -136,7 +139,7 @@ def list_tables(
         str | None,
         Field(
             description=(
-                "Optional schema/catalog namespace. Overrides DATABASE_SCHEMA when provided."
+                "Optional schema/catalog namespace. Overrides DATABASE_SCHEMA only outside production."
             )
         ),
     ] = None,
@@ -182,7 +185,7 @@ def schema_overview(
         str | None,
         Field(
             description=(
-                "Optional schema/catalog namespace. Overrides DATABASE_SCHEMA when provided."
+                "Optional schema/catalog namespace. Overrides DATABASE_SCHEMA only outside production."
             )
         ),
     ] = None,
@@ -269,7 +272,7 @@ def inspect_table(
         str | None,
         Field(
             description=(
-                "Optional schema/catalog namespace. Overrides DATABASE_SCHEMA when provided."
+                "Optional schema/catalog namespace. Overrides DATABASE_SCHEMA only outside production."
             )
         ),
     ] = None,
